@@ -40,7 +40,6 @@ void sendmsg (char *user, char *target, char *msg) {
 	int server = open("serverFIFO",O_WRONLY);
 	write(server,&req,sizeof(struct message));
 	close(server);
-
 }
 
 void* messageListener(void *arg) {
@@ -80,7 +79,7 @@ int isAllowed(const char*cmd) {
 
 int main(int argc, char **argv) {
     pid_t pid;
-    char **cargv; 
+    char **cargv;
     char *path;
     char line[256];
     int status;
@@ -135,8 +134,8 @@ int main(int argc, char **argv) {
 		// if no message is specified, you should print the followingA
  		// printf("sendmsg: you have to enter a message\n");
 
-		char *target = strtok(line, " ");
-		char *msg = strtok(line, " ");
+		char *target = strtok(NULL, " ");
+		char *msg = strtok(NULL, "");
 		sendmsg(uName, target, msg);
 
 		continue;

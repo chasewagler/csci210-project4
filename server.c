@@ -35,7 +35,7 @@ int main() {
 		if (bytesRead == -1) {
 			printf("Error reading server pipe");
 		} else if (bytesRead == 0) {
-			break;
+			continue;
 		}
 
 		printf("Received a request from %s to send the message %s to %s.\n",req.source,req.msg,req.target);
@@ -45,7 +45,7 @@ int main() {
 		// close target FIFO after writing the message
 
 		target = open(req.target, O_WRONLY);
-		int bytesWritten = write(target, &req, sizeof(struct message));
+		write(target, &req, sizeof(struct message));
 		close(target);
 
 	}
