@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -32,10 +31,12 @@ int main() {
 		// TODO:
 		// read requests from serverFIFO
 
-
-
-
-
+		int bytesRead = read(server, &req, sizeof(struct message));
+		if (bytesRead == -1) {
+			printf("Error reading server pipe");
+		} else if (bytesRead == 0) {
+			break;
+		}
 
 		printf("Received a request from %s to send the message %s to %s.\n",req.source,req.msg,req.target);
 
@@ -43,11 +44,9 @@ int main() {
 		// open target FIFO and write the whole message struct to the target FIFO
 		// close target FIFO after writing the message
 
-
-
-
-
-
+		target = open(req.target, O_WRONLY);
+		int bytesWritten = write(target, &req, sizeof(struct message));
+		close(target);
 
 	}
 	close(server);

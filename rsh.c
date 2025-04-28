@@ -31,12 +31,15 @@ void sendmsg (char *user, char *target, char *msg) {
 	// Send a request to the server to send the message (msg) to the target user (target)
 	// by creating the message structure and writing it to server's FIFO
 
+	//create message
+	struct message req;
+	strcpy(req.source, user);
+	strcpy(req.target, target);
+	strcpy(req.msg, msg);
 
-
-
-
-
-
+	int server = open("serverFIFO",O_WRONLY);
+	write(server,&req,sizeof(struct message));
+	close(server);
 
 }
 
@@ -49,10 +52,18 @@ void* messageListener(void *arg) {
 	// Incoming message from [source]: [message]
 	// put an end of line at the end of the message
 
+	char *pipeName = (char *)arg;
+	struct message incomingMsg;
+	int userFifo = open(pipeName, O_RDONLY);
 
-
-
-
+	while(1) {
+		int bytesRead = read(userFifo, &incomingMsg, sizeof(struct message));
+		if (bytesRead == 0) {
+			break;
+		}
+	}
+	close(userFifo);
+	printf("Incoming message from %s: %s\n", incomingMsg.source, incomingMsg.msg);
 
 	pthread_exit((void*)0);
 }
@@ -86,9 +97,9 @@ int main(int argc, char **argv) {
     // TODO:
     // create the message listener thread
 
-
-
-
+	pthread_t tid;
+	pthread_create(&tid, NULL, messageListener, (void *)uName);
+	pthread_detach(tid);
 
     while (1) {
 
@@ -124,14 +135,9 @@ int main(int argc, char **argv) {
 		// if no message is specified, you should print the followingA
  		// printf("sendmsg: you have to enter a message\n");
 
-
-
-
-
-
-
-
-
+		char *target = strtok(line, " ");
+		char *msg = strtok(line, " ");
+		sendmsg(uName, target, msg);
 
 		continue;
 	}
