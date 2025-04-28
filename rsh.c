@@ -58,11 +58,12 @@ void* messageListener(void *arg) {
 	while(1) {
 		int bytesRead = read(userFifo, &incomingMsg, sizeof(struct message));
 		if (bytesRead == 0) {
-			break;
+			continue;
 		}
+		printf("Incoming message from %s: %s\n", incomingMsg.source, incomingMsg.msg);
 	}
 	close(userFifo);
-	printf("Incoming message from %s: %s\n", incomingMsg.source, incomingMsg.msg);
+	//printf("Incoming message from %s: %s\n", incomingMsg.source, incomingMsg.msg);
 
 	pthread_exit((void*)0);
 }

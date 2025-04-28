@@ -7,7 +7,7 @@
 
 struct message {
 	char source[50];
-	char target[50]; 
+	char target[50];
 	char msg[200]; // message body
 };
 
@@ -32,9 +32,7 @@ int main() {
 		// read requests from serverFIFO
 
 		int bytesRead = read(server, &req, sizeof(struct message));
-		if (bytesRead == -1) {
-			printf("Error reading server pipe");
-		} else if (bytesRead == 0) {
+		if (bytesRead == 0) {
 			continue;
 		}
 
